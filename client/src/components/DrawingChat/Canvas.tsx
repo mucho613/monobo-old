@@ -6,25 +6,22 @@ type CanvasProps = {
 }
 
 function Canvas(props: CanvasProps) {
-  const canvasRef = useRef(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
-    const context = getContext();
-    props.stroke.forEach((point: {x: number, y: number}, index: number) => {
-      if(index !== 0) {
-        context.lineTo(point.x, point.y);
-        context.stroke();
-      }
-      if(index !== props.stroke.length - 1) {
-        context.beginPath();
-        context.moveTo(point.x, point.y);
-      }
-    })
+    const context = canvasRef.current?.getContext('2d');
+    if(context) {
+      props.stroke.forEach((point: {x: number, y: number}, index: number) => {
+        if(index !== 0) {
+          context.lineTo(point.x, point.y);
+          context.stroke();
+        }
+        if(index !== props.stroke.length - 1) {
+          context.beginPath();
+          context.moveTo(point.x, point.y);
+        }
+      })
+    }
   });
-
-  const getContext = (): CanvasRenderingContext2D => {
-    const canvas: any = canvasRef.current;
-    return canvas.getContext('2d');
-  }
 
   return (
     <div className="canvas-container">
