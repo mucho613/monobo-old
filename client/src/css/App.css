@@ -1,0 +1,11 @@
+body {
+  overflow: hidden;
+  touch-action: none;
+  /* ユーザーの範囲選択を無効化 */
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
