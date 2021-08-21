@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import './css/Canvas.css';
 
 type CanvasProps = {
-  stroke: any[];
+  stroke: { x: number, y: number }[];
 }
 
 function Canvas(props: CanvasProps) {
