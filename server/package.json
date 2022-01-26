@@ -1,0 +1,26 @@
+{
+  "name": "monoiro-board-server",
+  "version": "1.0.0",
+  "description": "MONOIRO Board Server",
+  "main": "app.js",
+  "dependencies": {
+    "canvas": "^2.6.1",
+    "express": "^4.17.1",
+    "image-js": "^0.21.8",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mucho613/monoiro-board-server.git"
+  },
+  "author": "Daisuke Yamamura",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mucho613/monoiro-board-server/issues"
+  },
+  "homepage": "https://github.com/mucho613/monoiro-board-server#readme"
+}

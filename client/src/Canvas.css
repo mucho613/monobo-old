@@ -1,0 +1,10 @@
+canvas {
+  position: absolute;
+}
+
+.canvas-piece {
+  /* position: absolute;
+  top: 0;
+  left: 0; */
+  background-color: #f5f5f5;
+}
