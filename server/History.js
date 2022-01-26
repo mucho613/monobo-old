@@ -34,7 +34,7 @@ module.exports = class History {
 
       if(action.isActive) {
         this.fixedImageCanvasContext.globalAlpha = action.tool.alpha;
-        this.fixedImageCanvasContext.globalCompositeOperation = action.tool.type === 'pen'
+        this.fixedImageCanvasContext.globalCompositeOperation = action.tool.type === 0
           ? 'source-over'
           : 'destination-out';
 
@@ -52,16 +52,16 @@ module.exports = class History {
           const context = canvas.getContext('2d');
 
           context.clearRect(0, 0, width, height);
-    
+
           context.lineCap = 'round';
           context.lineJoin = 'round';
           context.strokeStyle = action.tool.color;
-    
+
           for(let i = 1; i < action.stroke.length; i++) {
             const previousPoint = action.stroke[i - 1];
             const point = action.stroke[i];
             const thickness = point.force * action.tool.thicknessCoefficient;
-            
+
             context.beginPath();
             context.lineWidth = thickness;
             context.moveTo(previousPoint.x - action.left, previousPoint.y - action.top);
@@ -79,7 +79,7 @@ module.exports = class History {
   actionUpdate = (id, point) => {
     // 直近の対象idの操作を検索して、取り出す
     const action = this.queue[this.getLatestActionIndexById(id)];
-    
+
     if(action) {
       // Action に Stroke を追加する
       action.stroke.push(point);
@@ -107,7 +107,7 @@ module.exports = class History {
     // 何もしない
 
     // const action = this.queue[this.getLatestActionIndexById(id)];
-    
+
     // if(action && action.stroke.length > 1) {
     //   const width = action.right - action.left;
     //   const height = action.bottom - action.top;
@@ -128,7 +128,7 @@ module.exports = class History {
     //     const previousPoint = action.stroke[i - 1];
     //     const point = action.stroke[i];
     //     const thickness = point.force * action.tool.thicknessCoefficient;
-        
+
     //     context.beginPath();
     //     context.lineWidth = thickness;
     //     context.moveTo(previousPoint.x - action.left, previousPoint.y - action.top);
@@ -145,7 +145,7 @@ module.exports = class History {
     if(action) action.isActive = false;
     return action;
   }
-  
+
   getLatestActionIndexById = id => {
     for(let i = this.queue.length - 1; i >= 0; i--) {
       const action = this.queue[i];

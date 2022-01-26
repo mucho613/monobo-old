@@ -9,7 +9,7 @@ module.exports = class DestinationCanvasPiece {
   commit = action => {
     // 画像から転写する(commit される Action が全て画像変換済みの前提)
     this.context.globalAlpha = action.tool.alpha;
-    this.context.globalCompositeOperation = action.tool.type === 'pen'
+    this.context.globalCompositeOperation = action.tool.type === 0
       ? 'source-over'
       : 'destination-out';
 
