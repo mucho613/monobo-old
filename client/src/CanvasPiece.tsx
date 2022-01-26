@@ -63,7 +63,10 @@ class CanvasPiece extends React.Component<Props> {
       action.tool.type === ToolType.Pen ? "source-over" : "destination-out";
 
     if (action.image) {
-      this.canvasContext.drawImage(action.image, action.left, action.top);
+      // TODO: 高さ 0 の image が生成される場合があり、drawImage が実行できない場合がある。どういう状況で生成されるか調査しつつ、そもそも History 内に生成されないように修正する。
+      if(action.image.width > 0 && action.image.height > 0) {
+        this.canvasContext.drawImage(action.image, action.left, action.top);
+      }
     } else if (action.stroke.length > 1) {
       const width = action.right - action.left;
       const height = action.bottom - action.top;
