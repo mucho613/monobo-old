@@ -4,6 +4,7 @@ import "./App.css";
 import Controller from "./Controller";
 import History from "./History";
 import InfinityCanvas from "./InfinityCanvas";
+import Loading from "./Loading";
 import { Tool, Tools, ToolType } from "./Tool";
 
 interface States {
@@ -13,6 +14,7 @@ interface States {
 
   fixedImage: HTMLCanvasElement | HTMLImageElement;
   historyQueue: Array<any>;
+  canvasLoading: boolean;
 }
 
 class App extends React.Component<{}, States> {
@@ -46,7 +48,8 @@ class App extends React.Component<{}, States> {
       tools: tools,
       selectedTool: tools.getById("pen"),
       fixedImage: new Image(2048, 2048),
-      historyQueue: []
+      historyQueue: [],
+      canvasLoading: true
     };
 
     this.socket.on("init", (initializeData: { [key: string]: Array<any> }) => {
@@ -61,10 +64,9 @@ class App extends React.Component<{}, States> {
     this.socket.on("fixed image", (base64: string) => {
       const image = new Image();
       image.src = base64;
-      setTimeout(
-        () => this.setState({ fixedImage: this.history.setFixedImage(image) }),
-        500
-      );
+      setTimeout(() => {
+        this.setState({ fixedImage: this.history.setFixedImage(image), canvasLoading: false })
+      }, 500);
     });
   }
 
@@ -127,12 +129,16 @@ class App extends React.Component<{}, States> {
           onStrokeEnd={this.handleActionEnd}
         />
 
-        <InfinityCanvas
-          ref={this.infinityCanvas}
-          selectedTool={this.state.selectedTool}
-          fixedImage={this.state.fixedImage}
-          historyQueue={this.state.historyQueue}
-        />
+        {
+          this.state.canvasLoading
+            ? <Loading />
+            : <InfinityCanvas
+              ref={this.infinityCanvas}
+              selectedTool={this.state.selectedTool}
+              fixedImage={this.state.fixedImage}
+              historyQueue={this.state.historyQueue}
+            />
+        }
       </div>
     );
   }
