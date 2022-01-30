@@ -1,4 +1,4 @@
-import React from "react";
+import React, { MouseEvent } from "react";
 
 interface Props {
   onStrokeStart: () => void;
@@ -7,13 +7,20 @@ interface Props {
 }
 
 class CanvasController extends React.Component<Props> {
-  // mouseForce = 0.5;
-  // penGrounded = false;
+  mouseForce = 0.5;
+  penGrounded = false;
   canvasController!: React.RefObject<HTMLDivElement>;
+
+  touchScreenDevice: boolean = false;
 
   constructor(props: Props) {
     super(props);
     this.canvasController = React.createRef<HTMLDivElement>();
+
+    const ua = window.navigator.userAgent.toLowerCase();
+    if(ua.indexOf('ipad') > -1 || ua.indexOf('macintosh') > -1 && 'ontouchend' in document) {
+      this.touchScreenDevice = true;
+    }
   }
 
   componentDidMount() {
@@ -26,34 +33,34 @@ class CanvasController extends React.Component<Props> {
 
   stopScroll = (event: TouchEvent) => event.preventDefault();
 
-  // タッチすると MouseDown が発生するのやめてほしいのでコメントアウト(マウスで描けない)
-  // handleMouseDown = e => {
-  //   // 主ボタンのクリック時しか反応しない
-  //   if(e.button === 0) {
-  //     const position = this.getCanvasPositionFromClientPosition(e.clientX, e.clientY);
-  //     // ペンを接地状態にする
-  //     this.penGrounded = true;
-  //     this.props.onStrokeStart(position.x, position.y, this.mouseForce);
-  //     window.alert("Mouse down");
-  //   }
-  // }
+  handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
+    // 主ボタンのクリック時しか反応させない
+    if(!this.touchScreenDevice && event.button === 0) {
+      const position = this.getCanvasPositionFromClientPosition(event.clientX, event.clientY);
+      // ペンを接地状態にする
+      this.penGrounded = true;
+      this.props.onStrokeStart();
+      this.props.onStrokeMove(position.x, position.y, this.mouseForce)
+    }
+  }
 
-  // handleMouseMove = e => {
-  //   if(e.button === 0 && this.penGrounded) {
-  //     const position = this.getCanvasPositionFromClientPosition(e.clientX, e.clientY);
-  //     this.props.onStrokeMove(position.x, position.y, this.mouseForce);
-  //   }
-  // }
+  handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+    if(!this.touchScreenDevice && event.button === 0 && this.penGrounded) {
+      const position = this.getCanvasPositionFromClientPosition(event.clientX, event.clientY);
+      this.props.onStrokeMove(position.x, position.y, this.mouseForce);
+    }
+  }
 
-  // handleMouseUp = e => {
-  //   // 主ボタンのクリック時しか反応しない
-  //   if(e.button === 0) {
-  //     const position = this.getCanvasPositionFromClientPosition(e.clientX, e.clientY);
-  //     // ペンの接地状態を解除
-  //     this.penGrounded = false;
-  //     this.props.onStrokeEnd(position.x, position.y, this.mouseForce);
-  //   }
-  // }
+  handleMouseUp = (event: MouseEvent<HTMLDivElement>) => {
+    // 主ボタンのクリック時しか反応させない
+    if(!this.touchScreenDevice && event.button === 0) {
+      const position = this.getCanvasPositionFromClientPosition(event.clientX, event.clientY);
+      // ペンの接地状態を解除
+      this.penGrounded = false;
+      this.props.onStrokeMove(position.x, position.y, this.mouseForce);
+      this.props.onStrokeEnd();
+    }
+  }
 
   handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
     const touch: any = event.changedTouches[0];
@@ -128,9 +135,9 @@ class CanvasController extends React.Component<Props> {
   render() {
     return (
       <div
-        // onMouseDown={this.handleMouseDown}
-        // onMouseMove={this.handleMouseMove}
-        // onMouseUp={this.handleMouseUp}
+        onMouseDown={this.handleMouseDown}
+        onMouseMove={this.handleMouseMove}
+        onMouseUp={this.handleMouseUp}
         ref={this.canvasController}
         onTouchStart={this.handleTouchStart}
         onTouchMove={this.handleTouchMove}
