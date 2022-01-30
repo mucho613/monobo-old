@@ -18,7 +18,7 @@ class CanvasController extends React.Component<Props> {
     this.canvasController = React.createRef<HTMLDivElement>();
 
     const ua = window.navigator.userAgent.toLowerCase();
-    if(ua.indexOf('ipad') > -1 || ua.indexOf('macintosh') > -1 && 'ontouchend' in document) {
+    if((ua.indexOf('ipad') > -1 || ua.indexOf('macintosh') > -1) && 'ontouchend' in document) {
       this.touchScreenDevice = true;
     }
   }
